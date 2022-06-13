@@ -1,0 +1,78 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserEntity {
+  id: String!
+  name: String!
+  email: String!
+  role: String!
+  password: String!
+}
+
+type AuthLoginOutput {
+  """Generated access_token of the user"""
+  accessToken: String!
+
+  """The data of user"""
+  user: UserEntity!
+}
+
+type Query {
+  users: [UserEntity!]!
+  AuthProfile: UserEntity!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): UserEntity!
+  AuthRegister(input: AuthRegisterInput!): UserEntity!
+  AuthLogin(input: AuthLoginInput!): AuthLoginOutput!
+  AuthUpdateProfile(input: AuthUpdateInput!): UserEntity!
+}
+
+input CreateUserInput {
+  """name of the user"""
+  name: String!
+
+  """email of the user"""
+  email: String!
+
+  """role of the user"""
+  role: String!
+
+  """password of the user"""
+  password: String!
+}
+
+input AuthRegisterInput {
+  """name of the user"""
+  name: String!
+
+  """email of the user"""
+  email: String!
+
+  """role of the user"""
+  role: String!
+
+  """password of the user"""
+  password: String!
+}
+
+input AuthLoginInput {
+  """email of the user"""
+  email: String!
+
+  """password of the user"""
+  password: String!
+}
+
+input AuthUpdateInput {
+  """name of the user"""
+  name: String
+
+  """password name of the user"""
+  password: String
+
+  """current password of the user"""
+  currentPassword: String
+}
