@@ -4,23 +4,27 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserEntity } from './entities';
 import { UserService } from './services/user.service';
+import ConnectionArgs from 'src/utils/relay/connection.args';
+import { ListUserOutput, ListUserInput } from './dto';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => UserEntity)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
+  createUser(@Args('input') params: CreateUserInput) {
+    return this.userService.create(params);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [UserEntity], { name: 'users' })
-  findAll() {
-    return [{
-      id: "xxxx",
-      name: "yyy"
-    }];
+  @Query(() => ListUserOutput, { name: 'UserList' })
+  async findAll(
+    @Args('args') args: ConnectionArgs,
+    @Args('filter') filter: ListUserInput
+  ): Promise<ListUserOutput> {
+      return this.userService.findAll(args, filter)
+
   }
 
   // @UseGuards(JwtAuthGuard)

@@ -14,7 +14,8 @@ import {
     const { first = 0, last = 0, after, before } = args;
   
     const isForwardPaging = !!first || !!after;
-    const isBackwardPaging = !!last || !!before;
+    const isBackwardPaging = !!last || !!before;    
+
     if (isForwardPaging && isBackwardPaging) {
       throw new Error('Relay pagination cannot be forwards AND backwards!');
     }
@@ -28,7 +29,6 @@ import {
       throw new Error("When paging backwards, a 'before' argument is required!");
     }
   
-    // eslint-disable-next-line no-nested-ternary
     return isForwardPaging
       ? { pagingType: 'forward', after, first }
       : isBackwardPaging
@@ -42,7 +42,7 @@ import {
   
   export function getPagingParameters(args: ConnectionArgs) {
     const meta = checkPagingSanity(args);
-  
+
     switch (meta.pagingType) {
       case 'forward': {
         return {
@@ -53,7 +53,6 @@ import {
       case 'backward': {
         const { last, before } = meta;
         let limit = last;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         let offset = getId(before!) - last;
   
         if (offset < 0) {

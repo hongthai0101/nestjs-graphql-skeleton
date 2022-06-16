@@ -7,7 +7,34 @@ type UserEntity {
   name: String!
   email: String!
   role: String!
-  password: String!
+}
+
+type PageDataDto {
+  count: Float!
+  limit: Float!
+  offset: Float!
+}
+
+type ListUserOutput {
+  page: UserEntityConnection!
+  pageData: PageDataDto
+}
+
+type UserEntityConnection {
+  edges: [UserEntityEdge!]
+  pageInfo: UserEntityPageInfo
+}
+
+type UserEntityEdge {
+  cursor: String
+  node: UserEntity
+}
+
+type UserEntityPageInfo {
+  startCursor: String
+  endCursor: String
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
 }
 
 type AuthLoginOutput {
@@ -19,12 +46,34 @@ type AuthLoginOutput {
 }
 
 type Query {
-  users: [UserEntity!]!
+  UserList(args: ConnectionArgs!, filter: ListUserInput!): ListUserOutput!
   AuthProfile: UserEntity!
 }
 
+input ConnectionArgs {
+  """Paginate before opaque cursor"""
+  before: String
+
+  """Paginate after opaque cursor"""
+  after: String
+
+  """Paginate first"""
+  first: Float
+
+  """Paginate last"""
+  last: Float
+}
+
+input ListUserInput {
+  """Email of user"""
+  email: String
+
+  """Name of user"""
+  name: String
+}
+
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): UserEntity!
+  createUser(input: CreateUserInput!): UserEntity!
   AuthRegister(input: AuthRegisterInput!): UserEntity!
   AuthLogin(input: AuthLoginInput!): AuthLoginOutput!
   AuthUpdateProfile(input: AuthUpdateInput!): UserEntity!

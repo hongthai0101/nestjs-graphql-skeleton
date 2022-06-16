@@ -1,9 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class ListUsersInput {
-  @Field(() => Number, { description: 'classical limit' })
-  limit: number;
-  @Field(() => Number, { description: 'classical offset' })
-  offset: number;
+export class ListUserInput {
+
+  @Field(() => String, { description: 'Email of user', nullable: true})
+  email: string;
+
+  @Field(() => String, { description: 'Name of user', nullable: true})
+  name: string;
 }

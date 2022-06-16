@@ -21,11 +21,12 @@ export class UserEntity extends AbstractEntity {
   id: string;
 
   @Field(() => String)
-  @Column({ nullable: true })
-  name: string | null;
+  @Column({ nullable: false })
+  name: string;
 
   @Field(() => String)
-  @Column({ nullable: true })
+  @Column({ nullable: false })
+  @Index()
   email: string | null;
 
   @Field(() => String)
@@ -33,9 +34,7 @@ export class UserEntity extends AbstractEntity {
   @Index()
   role?: string;
 
-  @Field(() => String)
-  @Column({ unique: true })
-  @Index()
+  @Column()
   password: string;
 
   public previousPassword: string;

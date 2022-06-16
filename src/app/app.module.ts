@@ -24,7 +24,7 @@ import authConfig from 'src/config/auth.config';
       driver: ApolloDriver,
       autoSchemaFile: './schema.gql',
       debug: true,
-      playground: true,
+      playground: true
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
