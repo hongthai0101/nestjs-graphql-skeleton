@@ -5,60 +5,53 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserEntity } from './entities';
 import { UserService } from './services/user.service';
 import ConnectionArgs from 'src/utils/relay/connection.args';
-import { ListUserOutput, ListUserInput } from './dto';
+import { ListUserOutput, ListUserInput, UpdateUserInput } from './dto';
+import { Roles } from '../role/roles.decorator';
+import { RolesGuard } from '../role/roles.guard';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Resolver(() => UserEntity)
 export class UserResolver {
   constructor(private readonly userService: UserService) { }
 
-  @UseGuards(JwtAuthGuard)
   @Mutation(() => UserEntity)
   createUser(@Args('input') params: CreateUserInput) {
     return this.userService.create(params);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Query(() => ListUserOutput, { name: 'UserList' })
+  @Roles(1)
   async findAll(
     @Args('args') args: ConnectionArgs,
     @Args('filter') filter: ListUserInput
   ): Promise<ListUserOutput> {
+    console.log(2222);
+    
       return this.userService.findAll(args, filter)
-
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Query(() => ListUsersResponse, { name: 'listUsersWithCursor' })
-  // async findAllWithCursor(
-  //   @Args('args') args: ConnectionArgs,
-  // ): Promise<ListUsersResponse> {
-  //   const { limit, offset } = getPagingParameters(args);
-  //   const { users, count } = await this.usersService.getUsers({
-  //     limit,
-  //     offset,
-  //   });
-  //   const page = connectionFromArraySlice(users, args, {
-  //     arrayLength: count,
-  //     sliceStart: offset || 0,
-  //   });
+  @Query(() => UserEntity, { name: 'UserItem' })
+  @Roles(1)
+  findOne(
+    @Args('id', { type: () => String }) id: string
+  ) {
+    return this.userService.findById(id)
+  }
 
-  //   return { page, pageData: { count, limit, offset } };
-  // }
+  @Mutation(() => UserEntity, {name: 'UserUpdate'})
+  @Roles(1)
+  update(
+    @Args('id', { type: () => String }) id: string,
+    @Args('input') input: UpdateUserInput
+  ) {
+    return this.userService.update(id, input);
+  }
 
-  // @Query(() => UserEntity, { name: 'user' })
-  // findOne(@Args('id', { type: () => String }) id: string) {
-  //   return this.usersService.findById(id)
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Mutation(() => UserEntity)
-  // updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-  //   return this.usersService.update(updateUserInput.id, updateUserInput);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Mutation(() => UserEntity)
-  // removeUser(@Args('id', { type: () => String }) id: string) {
-  //   return this.usersService.softDelete(id);
-  // }
+  @Mutation(() => UserEntity, {name: 'UserRemove'})
+  @Roles(2)
+  remove(
+    @Args('id', { type: () => String }) id: string
+  ) {
+    return this.userService.softDelete(id);
+  }
 }

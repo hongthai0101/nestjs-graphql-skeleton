@@ -45,9 +45,31 @@ type AuthLoginOutput {
   user: UserEntity!
 }
 
+type FileEntity {
+  id: String!
+  url: String!
+  userId: String!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type CreateSignedUrlOutput {
+  """Url of file"""
+  uploadURL: String!
+
+  """Filename of file"""
+  key: String!
+}
+
 type Query {
   UserList(args: ConnectionArgs!, filter: ListUserInput!): ListUserOutput!
+  UserItem(id: String!): UserEntity!
   AuthProfile: UserEntity!
+  FileSignedUrl(input: CreateSignedUrlInput!): CreateSignedUrlOutput!
 }
 
 input ConnectionArgs {
@@ -72,11 +94,20 @@ input ListUserInput {
   name: String
 }
 
+input CreateSignedUrlInput {
+  contentType: String!
+  filename: String!
+}
+
 type Mutation {
   createUser(input: CreateUserInput!): UserEntity!
+  UserUpdate(id: String!, input: UpdateUserInput!): UserEntity!
+  UserRemove(id: String!): UserEntity!
   AuthRegister(input: AuthRegisterInput!): UserEntity!
   AuthLogin(input: AuthLoginInput!): AuthLoginOutput!
   AuthUpdateProfile(input: AuthUpdateInput!): UserEntity!
+  FileUpload(file: Upload!): FileEntity!
+  FileCreate(input: CreateFileInput!): FileEntity!
 }
 
 input CreateUserInput {
@@ -91,6 +122,20 @@ input CreateUserInput {
 
   """password of the user"""
   password: String!
+}
+
+input UpdateUserInput {
+  """name of the user"""
+  name: String
+
+  """email of the user"""
+  email: String
+
+  """role of the user"""
+  role: String
+
+  """password of the user"""
+  password: String
 }
 
 input AuthRegisterInput {
@@ -124,4 +169,11 @@ input AuthUpdateInput {
 
   """current password of the user"""
   currentPassword: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateFileInput {
+  url: String!
 }

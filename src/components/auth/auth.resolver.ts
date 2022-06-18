@@ -1,23 +1,22 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserEntity } from '../user/entities';
 import { AuthLoginInput, AuthLoginOutput, AuthRegisterInput, AuthUpdateInput } from './dto';
 import { AuthService } from './auth.service';
 import { User } from './auth.decorator';
-
 @Resolver(() => UserEntity)
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  @Mutation(() => UserEntity, {name: 'AuthRegister'})
+  @Mutation(() => UserEntity, { name: 'AuthRegister' })
   register(
     @Args('input') params: AuthRegisterInput
   ) {
     return this.authService.userService.create(params);
   }
 
-  @Mutation(() => AuthLoginOutput, {name: 'AuthLogin'})
+  @Mutation(() => AuthLoginOutput, { name: 'AuthLogin' })
   login(
     @Args('input') params: AuthLoginInput
   ) {
@@ -25,7 +24,7 @@ export class AuthResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => UserEntity, {name: 'AuthProfile'})
+  @Query(() => UserEntity, { name: 'AuthProfile' })
   profile(
     @User('id') id: string
   ) {
@@ -33,7 +32,7 @@ export class AuthResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => UserEntity, {name: 'AuthUpdateProfile'})
+  @Mutation(() => UserEntity, { name: 'AuthUpdateProfile' })
   updateProfile(
     @Args('input') params: AuthUpdateInput,
     @User('id') id: string

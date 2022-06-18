@@ -7,8 +7,7 @@ import { ComponentModule } from 'src/components/component.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from 'src/database/typeorm-config.service';
 import { ConfigModule } from '@nestjs/config';
-import databaseConfig from 'src/config/database.config';
-import authConfig from 'src/config/auth.config';
+import {authConfig, databaseConfig, fileConfig} from 'src/config';
 
 @Module({
   imports: [
@@ -16,7 +15,8 @@ import authConfig from 'src/config/auth.config';
       isGlobal: true,
       load: [
         databaseConfig,
-        authConfig,
+        authConfig,,
+        fileConfig
       ],
       envFilePath: ['.env'],
     }),
